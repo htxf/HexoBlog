@@ -1,0 +1,104 @@
+
+body,dl, dd, h1, h2, h3, h4, h5, h6, p, form{margin:0;}   ol,li {margin:0; padding:0;}
+body {background-color: #20202e; font-family: "open sans", "Microsoft YaHei", 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;}
+a{text-decoration:none; color: #f4f4f4; }
+* {box-sizing:border-box;}
+
+/*背景图片*/
+body {
+	background-image: url('images/home.jpg');
+	background-repeat: no-repeat;
+	height: 716px;
+	background-size: cover;
+	z-index: -1;
+}
+/*主区域*/
+/*#main{
+	position: relative;
+	max-width: 1200px;
+	margin: 0 auto;
+}*/
+/*背景*/
+/*.hamburger:before {
+	content: "";
+	display: block;
+	background-image: url('../images/home.jpg');
+	background-repeat: no-repeat;
+	height: 716px;
+	background-size: cover;
+	z-index: -1;
+}*/
+
+
+
+/*展开hamburger nav导航时背景所有元素的高斯模糊*/
+.bodyBlur #container .blur{
+	-webkit-filter: blur(8px);
+  	-moz-filter: blur(8px);
+  	-o-filter: blur(8px);
+  	-ms-filter: blur(8px);
+  	filter: blur(8px);
+}
+.bodyBlur  {
+	background-image: url('./images/home2.jpg');
+	height: 716px;
+	background-size: cover;
+	z-index: -1;
+}
+
+.bodyNotes {
+	background-image: url('./images/works_bg.jpg');
+}
+/*没有遮罩的话 背景图片模糊的四边都是黑色的很难看。。
+或者可以放图片，但资源又占多了。。*/
+/*遮罩*/
+/*.lightbox {
+	background: rgba(0,0,0,0.8);
+	height: 100%;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+	display: none;
+}
+.lightbox.fadeIn{
+	display: block;
+}*/
+
+/*下一页*/
+/*.circle {
+	border-radius: 50%;
+	background-color: #c5c3c3;
+	width: 45px;
+	height:45px;
+	position: relative;
+	text-align: center;
+
+}
+.circle:after {
+	content: '';
+	display: block;
+	width: 20px;
+	height: 20px;
+	border-left: solid #f4f4f4 2px;
+	border-bottom: solid #f4f4f4 2px;
+	transform: rotate(-135deg);
+	position: absolute;
+	top: 11px;left: 7px;
+}
+.circle:hover {
+	background-color: #797979;
+	cursor: pointer;
+}
+*/
+
+/*主区域居中对齐*/
+.main_center {
+	position: absolute;
+	top:100px; left: 0; bottom: 0; right: 0;
+	margin:0 auto;
+	width: 60%
+}

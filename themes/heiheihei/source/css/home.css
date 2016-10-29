@@ -1,0 +1,27 @@
+
+/*主体内容*/
+.home_p{
+	font-family: 'Shadows Into Light', cursive;
+	/*font-family: 'Dancing Script', cursive;*/
+	/*font-family: Freestyle Script;*/
+	font-size:230px;
+	color: #f4f4f4;
+	position: absolute;
+  	top:250px; left: 0; bottom: 0; right: 0;
+  	text-align: center;
+
+}
+
+.off{
+	display: none;
+}
+
+.home_notes_list{
+	display: none;
+}
+
+.show{
+	display: block;
+}
+
+

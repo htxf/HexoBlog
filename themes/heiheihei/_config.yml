@@ -1,0 +1,32 @@
+# Header
+menu:
+  Home: /
+  Archives: /archives
+  Notes: /notes
+rss: /atom.xml
+
+# Content
+excerpt_link: →_→阅读全文
+fancybox: true
+
+# Sidebar
+sidebar: right
+widgets:
+- category
+- tag
+- tagcloud
+- archive
+- recent_posts
+
+# Miscellaneous
+google_analytics:
+favicon: /favicon.png
+twitter:
+google_plus:
+fb_admins:
+fb_app_id:
+  
+mathjax:
+  src: custom_mathjax_source
+  config:
+    # MathJax config
