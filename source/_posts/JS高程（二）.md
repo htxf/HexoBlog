@@ -250,4 +250,438 @@ tags: JS基础
     parseFloat("0xf"); // 0 而不像parseInt()认为是15 因为parseFloat()只解析十进制数
     parseFloat("3.125e7"); // 31250000 而不像parseInt()认为是3   
     ```
+
+#### 4.6 String 类型
+* 表示由零或多个16位Unicode字符组成的字符序列，即字符串。Uncicode字符是一个字符占2个字节，定长；UTF-8相当于是可变的Unicod字符。
+
+* 每个字符串都有一个**length**的**属性**，但它是返回字符串的长度，而不是返回字符串占多少个字节。
+
+* String类型有一些特殊的**字符字面量**，也叫**转义序列**，用于表示非打印字符或其他用途。
+  比如\r（回车）、\n（换行）。回车换行来自于之前的打印机，回车：carriage return，换行：line feed。回车是把打印头定义在左边界，换行是把纸下移一行。看的[这里](http://www.ruanyifeng.com/blog/2006/04/post_213.html)。
+  转义序列只占一个字符：
+    ``` javascript
+    var text = "This is the letter sigma: \u03a3.";
+    alert(text.length); // 输出28 \u03a3 算是一个
+    ```
+
+* 转换为字符串。两种方法：**转型函数**String()；**几乎每个**值都有的toString()**方法**。
+  xx的**toString()**方法
+    ``` javascript
+    // Undefined类型的值undefined和Null类型的值null没有这个方法
+    // Boolean类型
+    var found = true;
+    var foundAsString = foud.toString(); // 字符串"true"
+    // Number类型
+    var age = 11;
+    var ageAsString = age.toString(); // 字符串"11"
+    // Number类型 可以给toString()方法传递一个参数：输出数值的基数
+    var num = 10;
+    alert(num.toString()); // "10"
+    alert(num.toString(2)); // "1010"
+    alert(num.toString(8)); // "12"
+    alert(num.toString(10)); // "10"
+    alert(num.toString(16)); // "a"
+    // 事实上，3、4、5……进制都行
+    alert(num.toString(3)); // "101"
+    alert(num.toString(4)); // "22"
+    alert(num.toString(5)); // "20"
+    alert(num.toString(11)); // "a" 之后大于11制的都是"a" 最大的基还是36
+    // Object类型
+    var student = {id:666,name:"DaShuaiBi"};
+    student.toString(); // 返回"[object Object]" ？？？
+    student.id.toString(); // 返回"666"
+    ```
+  **String()函数**
+    ``` javascript
+    // Undefined类型
+    var value1;
+    alert(String(value1)); // 弹出 "undefined"
+    // Null类型
+    var value2 = null;
+    alert(String(value2)); // 弹出 "null"
+    //Boolean类型、Number类型、Object类型再用这个函数时，都是调用该值的toString()方法。
+    ```
+
+#### 4.7 Object 类型
+* 是一组数据和功能的集合。键值对、json、Java中所谓的bean实体类、Python中的字典……
+
+* 可以通过执行new操作符后跟要创建的对象类型的名称来创建。
+    ``` javascript
+    var o = new Object();
+    o.name = "DaShuaiBi";
+    o.age = 11;
+    //更深入一点的？
+    ```
+
+* Object的每个实例都具有下列属性和方法：constructor函数、hasOwnProperty(propertyName)、isProtypeOf(object)、propertyIsEnumerable(propertyName)、toLocaleString()、toString()、valueOf()。更具体的之后再讲。
+
+### 5. 操作符 
+
+#### 5.1 一元操作符
+* 递增和递减操作符 ++ --
+  ++num和num++异同；
+  用于非数值时，将值转换为数字
+* 一元加和减操作符 + - 放在数值前面
+  就是正负号……；
+  用于非数值时，将值转换为数字
   
+#### 5.2 位操作符
+**最好不要在JS中用位操作符？**
+* 按位非（NOT） ~
+  按位非的本质：操作数的**负值减1**。速度更快。这个有个[小例子](http://www.cnblogs.com/hutaoer/p/3390710.html)。
+* 按位与（AND） &
+* 按位或（OR） |
+* 按位异或（XOR） ^
+* 左移 <<
+* 有符号的右移 >>
+* 无符号的右移 >>>
+
+#### 5.3 布尔操作符
+* 逻辑非 !
+  记住Boolean()函数对每种数据类型的结果，再取反就是了。
+  **Boolean(variable)**和**!! variable** 是等价的。
+* 逻辑与 &&
+  逻辑与是**短路操作符**，怎么说，看例子：
+    ``` javascript
+    // 第一个操作数是true，才会对第二个操作数求值
+    var found = true;
+    var result = (found && someUndefinedVariable); //这里发生错误，someUndefinedVariable就没有声明
+    alert(result); // 不会执行
+    // 第一个操作数是flase，不会对第二个操作数求值，整个表达式一定是false
+    var found = false;
+    var result = (found && someUndefinedVariable); // 不会发生错误，根本不管someUndefinedVariable
+    alert(result); // 弹出false
+    ```
+  有操作数不是布尔值时：（这里的第一个操作数都是true，要是是false的话，不管第二个操作数是啥，整个表达式都会返回false）
+    ``` javascript
+    var student = {name:"DaShuaiBi",age:11};
+
+    // Undefined类型 有一个操作数是undefined
+    true && undefined; // 返回 undefined 不是说Boolean(undefined) 是false，然后再算
+    
+    undefined && true; // 返回 undefined 不是说Boolean(undefined)是false，然后整个都是false
+    undefined && null; // 返回 undefined
+    undefined && NaN; // 返回 undefined
+    undefined && 0; // 返回 undefined
+    undefined && student; // 返回 undefined
+    
+    // Null类型 有一个操作数是null
+    true && null; // 返回 null 不是说Boolean(null) 是false，然后再算
+    
+    null && true; // 返回 null 不是说Boolean(null) 是false，然后整个都是false
+    null && undefined; // 返回 null
+    null && NaN; // 返回 null
+    null && 0; // 返回 null
+    null && student; // 返回 null
+    
+    // Number类型 
+    true && 9453; // 返回 9453 不是说Boole(9453) 是true，然后再算
+    true && 0; // 返回 0 不是说Boolean(0) 是false，然后再算
+    true && NaN; // 返回 NaN 不是说Boolean(NaN) 是false，然后再算
+    
+    0 && true; // 返回 0
+    0 && undefined; // 返回 0
+    0 && null; // 返回 0
+    0 && NaN; // 返回 0
+    0 && student; // 返回 0
+
+    NaN && true; // 返回 NaN
+    NaN && undefined; // 返回 NaN
+    NaN && null; // 返回 NaN
+    NaN && 0; // 返回 NaN
+    NaN && student; // 返回 NaN
+
+    // 9453 && xx 就相当于 true && xx
+
+    // String 类型
+    true && ""; // 返回 "" 不是说Boolean("") 是false，然后再算
+    true && "heiheihei"; // 返回 "heiheihei" 不是说Boolean("heiheihei") 是true，然后再算
+
+    "" && true; // 返回 ""
+    "" && undefined; // 返回 ""
+    "" && null; // 返回 ""
+    "" && NaN; // 返回 ""
+    "" && student; // 返回 ""
+    
+    // "heiheihei" && xx 就相当于 true && xx
+
+    // Object类型
+    true && student; // 返回student1 不是说Boolean(student1) 是true，然后再算
+    
+    // student1 && xx 就相当于 true && xx  
+    ```
+* 逻辑或 ||
+  逻辑或和逻辑非一样，也是**短路操作符**，看例子：
+    ``` javascript
+    // 第一个操作数是true，就不会对第二个操作数求值了，整个表达式一定是true
+    var found = true;
+    var result = (found || someUndefinedVariable); // 不会发生错误，根本不管someUndefinedVariable
+    alert(result); // 弹出true
+    // 第一个操作数是flase，才会对第二个操作数求值
+    var found = false;
+    var result = (found || someUndefinedVariable); // 这里发生错误，someUndefinedVariable就没有声明
+    alert(result); // 不会执行
+    ```
+  有操作数不是布尔值时，（若是第一个操作数是true，就不会管第二个操作数了，整个表达式的值一定是true）
+    ``` javascript
+    var student = {name:"DaShuaiBi",age:11};
+
+    // Undefined类型 
+    false || undefined; // 返回 undefined
+    undefined || false; // 返回 false
+
+    undefined || undefined; // 返回 undefined
+
+    null || undefined; // 返回 undefined
+    undefined || null; // 返回 null
+
+    0 || undefined; // 返回 undefined
+    undefined || 0; // 返回 0
+
+    NaN || undefined; // 返回 undefined
+    undefined || NaN; // 返回 NaN
+
+    "" || undefined; // 返回 undefined
+    undefined || ""; // 返回 ""
+
+    9453 || undefined; // 返回 9453 不是说Boolean(9453) 是true，然后返回true
+    "heiheihei" || undefined; // 返回 "heiheihei" 不是说Boolean("heiheihei") 是true，然后再返回true
+    student || undefined; // 返回student 不是说Boolean(student)是true，然后再返回true
+    undefined || 9453; // 返回 9453
+    undefined || "heiheihei"; // 返回 "heiheihei"
+    undefined || student; // 返回 student
+    
+    // Null类型
+    false || null; // 返回 null
+    null || false; // 返回 false
+
+    null || null; // 返回 null
+
+    0 || null; // 返回 null
+    null || 0; // 返回 0
+
+    NaN || null; // 返回 null
+    null || NaN; // 返回 NaN
+
+    "" || null; // 返回 null
+    null || ""; // 返回 ""
+
+    9453 || null; // 返回 9453 不是说Boolean(9453) 是true，然后返回true
+    null || 9453; // 返回 9453
+    
+    "heiheihei" || null; // 返回 "heiheihei" 不是说Boolean("heiheihei") 是true，然后再返回true
+    null || "heiheihei"; // 返回 "heiheihei"
+    
+    student || null; // 返回student 不是说Boolean(student)是true，然后再返回true
+    null || student; // 返回 student
+    
+    // Number类型
+    false || 0; // 返回 0
+    0 || false; // 返回 false
+
+    "" || 0; // 返回 0
+    0 || ""; // 返回 null
+
+    false || NaN; // 返回 NaN
+    NaN || false; // 返回 false
+
+    "" || NaN; // 返回 NaN
+    NaN || ""; // 返回 null
+
+    false || 9453; // 返回 9453，不是说 Boolean(9453) 是true，然后返回true
+    9453 || false; // 返回 9453
+
+    9453 || 183; // 返回 9453
+    183 || 9453; // 返回 183
+
+    9453 || ""; // 返回 9453
+    "" || 9453; // 返回 9453
+
+    9453 || "heiheihei"; // 返回 9453
+    "heiheihei" || 9453; // 返回 "heiheihei"
+
+    9453 || student; // 返回 9453
+    student || 9453; // 返回 student
+
+    // String类型
+    false || ""; // 返回 ""
+    "" || false; // 返回 false
+
+    "" || "heiheihei"; // 返回 "heiheihei"
+    "heiheihei" || ""; // 返回 "heiheihei"
+
+    "" || student; // 返回 student
+    student || ""; // 返回 student
+
+    false || "heiheihei"; // 返回 "heiheihei"
+    "heiheihei" || false; // 返回 "heiheihei"
+    
+    "heiheihei" || "DaShuaiBi"; // 返回 "heiheihei"
+    "DaShuaiBi" || "heiheihei"; // 返回 "DaShuaiBi"
+
+    "heiheihei" || student; // 返回 "heiheihei"
+    student || "heiheihei"; // 返回 student
+
+    // Object类型
+    // 上边都有了
+    ```
+#### 5.4 乘性操作符
+* 乘法 *
+    ``` javascript
+    alert(Infinity * 0); // NaN
+    ```
+* 除法 /
+    ``` javascript
+    alert(Infinity / Infinity); // NaN
+    alert(0 / 0); // NaN
+    alert(5 / 0); // Infinity
+    alert(-5 / 0); // Infinity 
+    ```
+* 求模 %
+    ``` javascript
+    alert(Infinity % 5); // NaN
+    alert(Infinity % 0); // NaN
+    alert(5 % 0); // NaN
+    alert(5 % Infinity); // 5
+    alert(0 % 5); // 0
+    alert(0 % Infinity); // 0
+    alert(Infinity % Infinity); // NaN
+    ```
+
+#### 5.5 加性操作符
+* 加法 +
+    ``` javascript
+    
+    alert(-Infinity + -Infinity); // -Infinity
+
+    // 如果两个操作数都是字符串，拼接；如果只有一个操作数是字符串，将另一个转换成字符串，再拼接
+    var student = {name:"DaShuaiBi",age:11};
+    
+    alert(undefined + "heiheihei"); // "undefinedheiheihei"
+    alert(undefined + ""); // "undefined"
+    alert(null + "heiheihei"); // "nullheiheihei"
+    alert(null + ""); // "null"
+    alert(true + "heiheihei"); // "trueheiheihei"
+    alert(true + ""); // "true"
+    alert(5 + "5"); // "55" 而不是 10
+    alert(5 + ""); // "5" 
+    alert(0 + "5"); // "05"
+    alert(0 + ""); // "0"
+    alert(NaN + "5"); // "NaN5"
+    alert(NaN + ""); // "NaN"
+    alert("Da" + "ShuaiBi"); // "DaShuaiBi"
+    alert(student + "heiheihei"); // "[object Object]heiheihei"
+    alert(student + ""); // "[object Object]"
+    
+    // 两个操作数都不是字符串，也不是Number类型呢？ 都用Number()函数转换
+    undefined + undefined; // NaN
+    undefined + null; // NaN
+    undefined + true; // NaN
+    undefined + false; // NaN
+    undefined + 0; // NaN
+    undefined + NaN; // NaN
+    undefined + 5; // NaN
+    undefined + student; // "undefined[object Object]" 感觉不是用Number()转型了
+
+    null + true; // 1
+    null + false; // 0
+    null + 0; // 0
+    null + NaN; // NaN
+    null + 5; // 5
+    null + student; // "null[object Object]" 感觉不是用Number()转型了
+
+    true + false; // 1
+    true + 5; // 6
+    false + 5; // 5
+    true + 0; // 1
+    false + 0; // 0
+    true + NaN; // NaN
+    false + NaN; // NaN
+    true + student; // "true[object Object]"
+    false + student; // "false[object Object]"
+
+    0 + student; // "0[object Object]" 
+    NaN + student; // "NaN[object Object]"
+    5 + student; // "5[object Object]"
+    ```
+* 减法 -
+    ``` javascript
+    alert(Infinity - Infinity); // NaN
+    alert(-Infinity - -Infinity); // NaN
+
+    // 如果有一个操作数是字符串、布尔值、null或undefined，先用Number()函数转成数值，再相减。
+    var student = {name:"DaShuaiBi",age:11};
+    
+    5 - undefined; // NaN
+    5 - null; // 5
+    5 - true; // 4
+    5 - false; // 5
+    5 - "heiheihei"; // NaN
+    5 - "222"; // -217
+    5 - ""; // 5
+    5 - student; // NaN 噢噢噢噢？
+
+    // 两个操作数都不是数字呢？
+    undefined - undefined; // NaN
+    undefined - null; // NaN
+    undefined - true; // NaN
+    undefined - false; // NaN
+    undefined - "heiheihei"; // NaN
+    undefined - "222"; // NaN
+    undefined - ""; // NaN
+    undefined - student; // NaN
+
+    null - null; // 0
+    null - true; // -1
+    null - false; // 0
+    null - "heiheihei"; // NaN
+    null - "222"; // -222
+    null - ""; // 0
+    null - student; // NaN
+
+    true - true; // 0
+    true - false; // 1
+    true - "heiheihei"; // NaN
+    false - "heiheihei"; // NaN
+    true - "222"; // -221
+    false - "222"; // -222
+    true - ""; // 1
+    false - ""; // 0
+    true - student; // NaN
+    false - student; // NaN
+
+    "DaShuaiBi" - "Bi"; // NaN 要是"DaShuai"就不错哦
+    "heiheihie" - "222"; // NaN
+    "heiheihie" - ""; // NaN
+    "heiheihie" - student; // NaN
+    "222" - "2"; // 220
+    "222" - ""; // 222
+    "222" - student; // NaN
+    "" - student; // NaN
+
+    var people = {name:"DaShuaiBi",age:"23"};
+    people - student; // NaN
+    ```
+
+#### 5.6 关系操作符
+小于（<）、大于（>）、小于等于（<=）、大于等于（>=）
+
+#### 5.7 相等操作符
+* 相等和不相等 == !=
+* 全等和不全等 === !==
+
+#### 5.8 条件操作符
+xx?xx:xx
+
+#### 5.9 赋值操作符
+* 简单赋值操作符 =
+* 复合赋值操作符 *= /= %= += -= <<= >>= >>>=
+
+#### 5.10 逗号操作符
+比如声明多个变量时为啥用逗号隔开，还有对象中的不同属性之间用逗号隔开……    
+    ``` javascript
+        var num1 = 1,
+            num2 = 2,
+            num3;
+        var student = {name:"DaShuaiBi",age:1}
+    ```
