@@ -665,10 +665,39 @@ tags: JS基础
 
 #### 5.6 关系操作符
 小于（<）、大于（>）、小于等于（<=）、大于等于（>=）
+``` javascript
+// 一些特殊的情况
+"Brick" < "alphabet"; // true 字符串的比较 比较字符串对应的字符编码值 大写字母的字符编码全部小于小写字母的字符编码
+"23" < "3"; // true 两个操作数都是字符串，比较的是对应的字符编码，"2"的字符编码是小于"3"的字符编码的
+"23" < 3; // false 有一个是数字，"23"转换成23，再与3比较
+// 有关NaN
+"a" < 3; // false 有3，数值，需要把"a"转换成数值，然而"a"转换为Number类型是NaN， NaN与任何操作数进行关系比较，结果都是false
+// 如果一个值不小于另一个值，则一定是大于或等于那个值。然而 NaN：
+NaN < 3; // false
+NaN >= 3; // false
+```
 
 #### 5.7 相等操作符
 * 相等和不相等 == !=
+  会先转换操作数（**强制转型**），然后再比较相等性
+    ``` javascript
+    // 一些特殊情况
+    undefined == null; // true
+    undefined == 0; // false
+    null == 0; // false
+    "NaN" == NaN; // false
+    5 == NaN; // false
+    NaN == NaN; // false
+    NaN != NaN; // true
+    false == 0; // true
+    true == 1; // true
+    true == 2; // false
+    "5" == 5; // true
+    ```
 * 全等和不全等 === !==
+  不进行转换操作数
+    
+> 为了保持代码中数据类型的完整性，推荐使用全等和不全等操作符。
 
 #### 5.8 条件操作符
 xx?xx:xx
@@ -685,3 +714,163 @@ xx?xx:xx
             num3;
         var student = {name:"DaShuaiBi",age:1}
     ```
+
+### 6. 语句
+
+#### 6.1 if语句
+#### 6.2 do-while语句
+后测试循环
+#### 6.3 while语句
+前测试循环
+#### 6.4 for语句
+前测试循环
+
+> 由于ECMAScript中不存在块级作用域，因此在循环内部定义的变量也可以在外部访问到
+
+``` javascript
+var count = 10;
+for (var i = 0; i < count; i++) {
+    alert(i);
+}
+alert(i); // 10 i是在循环体内定义的，再循环体外也可访问到
+```
+#### 6.5 for-in语句
+
+> for-in语句是一种精确的迭代语句，可以用来**枚举** **对象的** **属性**
+
+#### 6.6 label语句
+多与break和continue联合使用。多发生在**循环嵌套**情况下。比如可以从内层循环直接跳出外层循环。
+#### 6.7 break和continue语句
+#### 6.8 with语句
+
+> with语句的作用是将代码的作用域设置到一个特定的对象中
+> 
+> 大量使用with语句会导致性能下降……不建议使用
+
+#### 6.9 switch语句
+避免写很多if、else if语句
+switch、case、break、default
+要是case后不加break，找到符合的case，之后的每个case都会执行。
+
+> 可以在switch语句中使用任何数据类型（很多其他语言只能使用数值）
+> 
+> 每个case的值不一定是常量，可以是变量，甚至是表达式
+> 
+> switch语句在比较值时使用的是全等操作符
+
+``` javascript
+// 例子1 弹出"Greeting was found."
+switch ("hello world") {
+    case "hello" + " world":
+        alert("Greeting was found.");
+        break;
+    case "goodbye":
+        alert("Closing was found.");
+        break;
+    default:
+        alert("Unexpected message was found.");
+}
+// 例子2 弹出"More than 20."
+var num = 25;
+switch (true) {
+    case num < 0:
+        alert("Less than 0.");
+        break;
+    case num >=0 && num <= 10:
+        alert("Between 0 and 10.");
+        break;
+    case num > 10 && num <= 20:
+        alert("Between 10 and 20.");
+        break;
+    default:
+        alert("More than 20.");
+}
+```
+
+### 7. 函数
+* 函数的声明、调用、返回值。
+    > 函数使用function关键字声明，后跟一组参数以及函数体
+    > 
+    > 函数可以通过其函数名来调用，后面还要加上一对圆括号和参数
+    > 
+    > 函数定义时不必指定是否返回值，在任何时候都可以通过return语句后跟要返回的值来实现返回值
+
+* 理解参数
+  (1) 其他语言可能需要事先创建一个**函数签名**（大概就是参数的类型吧），ECMAScript中不用
+
+  (2) ECMAScript函数不介意传递进来多少个参数，也不在乎传进来参数是什么数据类型
+    
+    > ECMAScript中的**参数在内部**是用一个**数组**来表述的。函数接收的始终是这个数组，而不关心数组中包含哪些参数（如果有参数的话）
+
+  (3) **在函数体内**，可以通过**arguments对象**访问这个数组。可以用**方括号语法**[]访问它的每一元素；可以使用**length属性**确定传递进来多少个参数
+
+  (4) 函数中命名的参数只**提供便利**，但不是必需的
+
+  (5) ECMAScript函数**没有重载**。其他函数的重载是通过声明定义相同的函数名，而有不同的参数类型或不同的参数数量实现的。
+    
+    > ECMAScript中由于函数没有签名，其参数是由包含零或多个值的数组表示的。没有函数签名，真正的重载是不可能做到的。
+  
+  但可以通过检查传入函数中参数的类型和数量并作出不同的反应，从而模拟重载。比如：
+    ``` javascript
+    function doAdd() {
+        if (arguments.length == 1) {
+            alert(arguments[0] + 10);
+        } else if (arguments.lenght == 2) {
+            alert(arguments[0] + arguments[1]);
+        }
+    }
+
+    doAdd(10); // 20
+    doAdd(30, 20); // 50
+    ```
+
+  (6) 关于**arguments**对象
+  > arguments的**值**永远与对应的**命名参数**（大概就是形参吧）的值保持同步
+
+    看例子：
+  
+    ``` javascript
+    function doAdd(num1, num2) {
+        arguments[1] = 10;
+        alert(arguments[0] + num2);
+    }
+    
+
+    doAdd(10,20); 
+    /* 
+     * 20 arguments对象中的值会自动反映到对应的命名参数本来传进来的参数是[10,20]，即arguments中是[10,20],但是
+     * 修改了arguments[1]为10，则num2也被修改为10，最后alert的是10+10等于20
+     */
+    
+
+    doAdd(10,"heihei"); 
+    /*
+     * 20 arguments刚开始是[10,"heihei"]，之后arguments[1]被修改为10，num2也跟着被修改为10，
+     * 最后alert的是10+10等于20
+     */
+    ```
+
+    > arguments对象的**长度**是由**传入的参数个数**决定的，不是由定义函数时的命名参数的个数决定的
+    
+    看例子：
+
+    ``` javascript
+    // 还是上边的函数
+    
+
+    doAdd(10,100,20);
+     /*
+      * 20 arguments刚开始是[10,100,20],之后被修改为[10,10,20]，
+      * 再将num1、num2和arguments中的值对应，arguments[2]就没有用到，之后num2是10，最后alert的等于20
+      */ 
+    
+
+    doAdd(10); 
+    /*
+     * NaN 如果只是传递了一个值，这时arguments中是[10],就没有arguments[1]，因此函数中第一句就没用。
+     * 而对于没有传递值的命名参数将自动被赋予undefined值，也就是说这时num2中是undefined，alert的是 10 + undefined，
+     * 先用Number(undefined)转型，为NaN，之后10 + NaN是NAN
+     */ 
+    ```
+
+    > ECMAScript中的所有参数传递的都是值，不可能通过引用传递参数
