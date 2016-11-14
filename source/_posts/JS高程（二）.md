@@ -737,7 +737,7 @@ var count = 10;
 for (var i = 0; i < count; i++) {
     alert(i);
 }
-alert(i); // 10 i是在循环体内定义的，再循环体外也可访问到
+alert(i); // 10 i是在循环体内定义的，在循环体外也可访问到
 ```
 #### 6.5 for-in语句
 
