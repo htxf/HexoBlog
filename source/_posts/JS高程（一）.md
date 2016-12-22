@@ -77,12 +77,12 @@ alert("Hello");
     <meta charset="UTF-8">
     <title>test</title>
     <script type="text/javascript">
-	    alert("Hi");
-	</script>
+        alert("Hi");
+    </script>
 </head>
 <body>
-	诶哟，厉害啦。我出现了！！！！！
-	<script type="text/javascript" src="test.js"></script>
+    诶哟，厉害啦。我出现了！！！！！
+    <script type="text/javascript" src="test.js"></script>
 </body>
 </html>
 ```
