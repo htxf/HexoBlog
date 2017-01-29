@@ -35,4 +35,127 @@ LoginActiviy类实现了*LoginView*接口、LoginPresenterImp类实现了*LoginP
 
 <img src="..\Android还踢球app总结（三）\findallgames pakage.PNG" >
 
+其他两个功能模块的代码组织和找组织功能一样，这里就不在叙述。
+
 ### 3. 找组织功能模块
+本小节详细介绍下找组织功能的MVP模式的设计，以及实际的流程。其他两个功能模块大同小异。其模块中具体的类如下图所示。
+
+<img src="..\Android还踢球app总结（三）\findallgames class.PNG" >
+
+首先，有三个接口(interface)分别对应MVP。*AllPostsModel*---M、*AllPostsView*---V、*AllPostsPresenter*---P。还有一个*OnAllPostsListener*接口，是M(AllPostsModel)用来通知P(AllPostsPresenter)查询结果的。
+
+<img src="..\Android还踢球app总结（三）\find all games interface.jpg" >
+
+接下来，分别实现了各个接口。AllPostsFragment类实现AllPostsView接口（这里使用的Fragment做View，就是上一节介绍的ViewPager结合Fragment做tabs）、AllPostsPresenterImp类实现AllPostsPresenter接口和OnAllPostsListenter接口、AllPostsModelImp类实现AllPostsModel接口。
+
+在AllPostsFragment中持有AllPostsPresenter的引用，在AllPostsPresenterImp中持有AllPostsView和AllPostsModel的引用。
+
+打开软件，要执行AllPostsFragment中的onCreateView方法，在这个方法中，首先获取了AllPostsPresenter的引用，然后调用了该类中的getAllPosts方法，还有一些其他关于Fragment和其空间的初始化操作。
+``` java
+@Override
+public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+     // 实现对AllPostsPresenterImp的引用
+    mAllPostsPresenter = new AllPostsPresenterImp(this);
+    // 调用AllPostsPresenterImp中的getAllPosts方法
+    mAllPostsPresenter.getAllPosts();
+     ...
+}
+```
+
+AllPostsPresenterImp中的getAllPosts方法会调用AllPostsModel中的loadAllPosts方法。其中有一个参数，需要传入OnAllPostsListener，因为AllPostsPresenterImp实现了OnAllPostsListener，所以就传入this。
+``` java
+@Override
+public void getAllPosts(){
+    mAllPostsView.showLoading();
+    // 调用AllPostsModelImp中的loadAllPosts方法
+    mAllPostsModel.loadAllPosts(this);
+}
+```
+
+在AllPostsModelImp的loadAllPosts方法中，根据现在的日期时间，去Bmob服务器上查询约球时间在当前时刻之后的帖子。然后将查询结果通过OnAllPostsListener告知给AllPostsPresenterImp。（若是成功，就将排好序的Post是放入List中，传递给OnAllPostsListener的onSuccess方法）其中有两处对所查询的帖子进行排序，query.order("dateTime")和Collections.sort(...)，应该是query.order()不顶用，才又使用了Collections.sort()？？？
+``` java 
+@Override
+public void loadAllPosts(final OnAllPostsListener listener){
+    // 获取当前的时间，并转化为 yyyy-MM-dd HH:mm:ss的格式
+    Calendar calendar=Calendar.getInstance();
+    calendar.setTime(new Date());
+    String startDate =String.valueOf(calendar.get(Calendar.YEAR))+"-"+
+            // 月份要加一
+            String.valueOf(calendar.get(Calendar.MONTH)+1)+"-"+
+            String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))+" "+
+            String.valueOf(calendar.get(Calendar.HOUR_OF_DAY))+":"+
+            String.valueOf(calendar.get(Calendar.MINUTE))+":"+"00";
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Date date  = null;
+    try {
+        date = sdf.parse(startDate);
+    } catch (ParseException e) {
+        e.printStackTrace();
+    }
+
+    // Bmob实现查询
+    BmobQuery<Post> query = new BmobQuery<>();
+    // 查询约球时间在当前时刻之后的帖子
+    query.addWhereGreaterThanOrEqualTo("dateTime",new BmobDate(date));
+    query.order("dateTime");
+    query.findObjects(ContextHolder.getContext(), new FindListener<Post>() {
+        @Override
+        public void onSuccess(List<Post> object) {
+            // TODO Auto-generated method stub
+            if (object.size() != 0) {
+                // 返回的是一个Post的List，对其按照约球时间进行排顺序。
+                Collections.sort(object, new Comparator<Post>() {
+                    public int compare(Post arg0, Post arg1) {
+                        return arg0.getDate().compareTo(arg1.getDate());
+                    }
+                });
+
+                listener.onSuccess(object);
+
+                postList = object;
+
+            } else {
+                Toast.makeText(ContextHolder.getContext(), "还没有约球组织", Toast.LENGTH_LONG).show();
+            }
+        }
+        @Override
+        public void onError(int code, String msg) {
+            // TODO Auto-generated method stub
+            listener.onError(msg);
+            Toast.makeText(ContextHolder.getContext(), msg + " " + code, Toast.LENGTH_LONG).show();
+        }
+    });
+}
+```
+
+AllPostsPresenterImp实现了OnAllPostsListener接口，其在onSuccess方法中调用了AllPostsView的setAllPosts方法。将查询到的Post的List传递过去。
+``` java
+@Override
+public void onSuccess(List<Post> objects){
+    mAllPostsView.hideLoading();
+    mAllPostsView.setAllPosts(objects);
+}
+```
+
+AllPostsFragment的中的setAllPosts方法就是把查询到的Post的List通过RecycleView的Adapter的构造函数传递过去。
+``` java
+@Override
+public void setAllPosts(List<Post> objects){
+    mRecyclerView.setAdapter(new AllPostsRecyclerViewAdapter(getActivity(),objects));
+}
+```
+
+这样一次查询就算是走了一遍。其实整个过程和之前的例子是一模一样的。类图如下所示。
+
+<img src="..\Android还踢球app总结（三）\find all games class diagram.jpg" >
+
+### 4. 其他功能模块
+发起组织功能模块中类图如下图所示。
+
+<img src="..\Android还踢球app总结（三）\lauch a game class.png" >
+
+查询一个帖子详情功能的类图如下所示。
+
+<img src="..\Android还踢球app总结（三）\a game details.png" >
+
+这两者的设计、运行过程和找组织功能都一样，就不再详细叙述了。
