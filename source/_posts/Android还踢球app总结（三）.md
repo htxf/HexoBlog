@@ -22,29 +22,29 @@ LoginActiviy类实现了*LoginView*接口、LoginPresenterImp类实现了*LoginP
 
 再介绍下UML类图中的关系，三角形箭头虚线箭身是具体的类实现接口，实线箭头是关联，虚线箭头是依赖。
 
-<img src="..\Android还踢球app总结（三）\class diagram relations.png" >
+<img src="..\Android还踢球app总结（三）\class diagram relations.png">
 
 [这篇文章](http://www.cnblogs.com/liuzhang/archive/2013/03/17/2964095.html)有介绍关联和依赖之间的区别。简单点说就是以依赖关系更弱，关联关系更强。像上图中的LoginPresenterImp中持有LoginInteractor的引用，两者关系强，是关联；而LoginInteractor只是其中一个方法用到了OnLoginFinishedListener做参数，两者关系弱，是依赖。
 
 ### 2. 还踢球app
 本软件就是完全按照上边那张图进行MVP的使用。还有一个问题，是应该按照不同的功能模块儿打包还是按照MVP这三者进行打包。网上两种方式都有使用者。我先按照功能模块建了包，然后再在里边按照MVP建了包，这样虽然层级深了，但感觉组织性更强了。
 
-<img src="..\Android还踢球app总结（三）\module package.PNG" >
+<img src="..\Android还踢球app总结（三）\module package.PNG">
 
 在找组织模块中，有一个entity包，还有三个子功能包，其中每个子功能包中都有三个包：Model、View和Presenter。本来觉得Java Bean 实体类应该算在Model中，但后来想比如entity中的Post类，有一些属性还有get、set方法，这些在每个子功能中都会用到，不知道该放到哪个里边。所以还不如这样，将所有的实体类放到一个包中，是其他类公用的，至于子功能中的Model就是单单做数据的访问，比如查询、添加等等。
 
-<img src="..\Android还踢球app总结（三）\findallgames pakage.PNG" >
+<img src="..\Android还踢球app总结（三）\findallgames pakage.PNG">
 
 其他两个功能模块的代码组织和找组织功能一样，这里就不在叙述。
 
 ### 3. 找组织功能模块
 本小节详细介绍下找组织功能的MVP模式的设计，以及实际的流程。其他两个功能模块大同小异。其模块中具体的类如下图所示。
 
-<img src="..\Android还踢球app总结（三）\findallgames class.PNG" >
+<img src="..\Android还踢球app总结（三）\findallgames class.PNG">
 
 首先，有三个接口(interface)分别对应MVP。*AllPostsModel*---M、*AllPostsView*---V、*AllPostsPresenter*---P。还有一个*OnAllPostsListener*接口，是M(AllPostsModel)用来通知P(AllPostsPresenter)查询结果的。
 
-<img src="..\Android还踢球app总结（三）\find all games interface.jpg" >
+<img src="..\Android还踢球app总结（三）\find all games interface.jpg">
 
 接下来，分别实现了各个接口。AllPostsFragment类实现AllPostsView接口（这里使用的Fragment做View，就是上一节介绍的ViewPager结合Fragment做tabs）、AllPostsPresenterImp类实现AllPostsPresenter接口和OnAllPostsListenter接口、AllPostsModelImp类实现AllPostsModel接口。
 
@@ -147,15 +147,15 @@ public void setAllPosts(List<Post> objects){
 
 这样一次查询就算是走了一遍。其实整个过程和之前的例子是一模一样的。类图如下所示。
 
-<img src="..\Android还踢球app总结（三）\find all games class diagram.jpg" >
+<img src="..\Android还踢球app总结（三）\find all games class diagram.jpg">
 
 ### 4. 其他功能模块
 发起组织功能模块中类图如下图所示。
 
-<img src="..\Android还踢球app总结（三）\lauch a game class.png" >
+<img src="..\Android还踢球app总结（三）\lauch a game class.png">
 
 查询一个帖子详情功能的类图如下所示。
 
-<img src="..\Android还踢球app总结（三）\a game details.png" >
+<img src="..\Android还踢球app总结（三）\a game details.png">
 
 这两者的设计、运行过程和找组织功能都一样，就不再详细叙述了。
