@@ -25,18 +25,26 @@ tags: JS基础
 
 * 访问对象属性的方法
     
-    * 法一：点表示法
+    * 法一：点表示法 后边永远不是 字符串
     ``` javascript
     // 接上代码
     alert(person.name);
     ```
-    * 法二：使用方括号
+    * 法二：使用方括号 方括号中永远是 字符串
     ``` javascript
     // 接上代码
-    alert(person[name]);
+    alert(person[name]); // !!! 注意 !!! 这样是undefiend
     ```
     * 方括号的优势
     ``` javascript
+    // 方括号中可以是变量！！！ 
+    var propertyName = "name"; 
+    alert(person[propertyName]); // DaShuaiBi
+    var propertyName2 = "age";
+    alert(person.propertyName2); // undefined
+    person = {name: "Dashuaibi", "age": 18};
+    var propertyName3 = "age";
+    alert(person.propertyName3); // undefined
     // 对象的属性名可以是字符串
     personX = {"name": "DaShuaiBi", "age": 16};
     alert(personX.name); // "DaShuaiBi"；点表示法仍可用
