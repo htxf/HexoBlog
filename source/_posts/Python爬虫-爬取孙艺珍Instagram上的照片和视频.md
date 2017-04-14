@@ -28,7 +28,7 @@ tags: python 爬虫
 
 <img src="..\Python爬虫-爬取孙艺珍Instagram上的照片和视频\query.PNG" width="70%" height="70%">
 
-发现其中query文件中有所需的东西。它放回的响应是一段json文件，通过调试工具提供的Preview可以方便的找到12张照片的url在nodes的12个对象中。
+发现其中query文件中有所需的东西。它返回的响应是一段json文件，通过调试工具提供的Preview可以方便的找到12张照片的url在nodes的12个对象中。
 
 <img src="..\Python爬虫-爬取孙艺珍Instagram上的照片和视频\response.PNG" width="70%" height="70%">
 
@@ -56,7 +56,7 @@ tags: python 爬虫
 
 使用requests库发送HTTP请求，使用json库解析返回的响应json数据。
 
-##### version2
+##### version1
 需要翻个墙。所以发送请求时要加上proxies，注意写法。
 ``` python
 import requests
@@ -368,7 +368,7 @@ headers = {
 
 最后根据硬盘上的资源url去下载，写了两个Python脚本。（文件打开方式是wb，写入二进制）
 一个是第一次下载images.txt和videos.txt中的链接。有可能很多条，中间可能发生崩溃，所以设置process_image和process_video来记录已经下载的个数；为了下一次只下载新增的url，设置了此次已下载的个数last_num。
-另一个是下载新增的资源。新增的资源还是在imgages.txt和videos.txt中存着，并且是在最上。先读取上一次下载后的总个数，再根据此时imgages.txt和videos.txt中链接个数判断要下载哪些链接，完成后再更新last_num值。
+另一个是下载新增的资源。新增的资源还是在imgages.txt和videos.txt中存着，~~并且是在最上~~ 这里错了，爬取到资源url时，打开文件(images.txt和videos.txt)方式是w+，应该是r+，所以新的资源url是在最后。先读取上一次下载后的总个数，再根据此时imgages.txt和videos.txt中链接个数判断要下载哪些链接，完成后再更新last_num值。
 
 还不太了解Python中的类、对象，所以就简单的写成了顺序执行的代码……而且为了保存下载进度，频繁的打开关闭文件，开销是不是很大？？但想不出其他的解决办法了？？还有一点，下载新的链接可以正确实现？？
 
